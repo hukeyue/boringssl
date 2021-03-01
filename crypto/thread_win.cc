@@ -27,6 +27,8 @@
 
 BSSL_NAMESPACE_BEGIN
 
+#ifndef OPENSSL_WINDOWS_ALLOW_WINXP
+
 static BOOL CALLBACK call_once_init(INIT_ONCE *once, void *arg, void **out) {
   void (**init)() = (void (**)())arg;
   (**init)();
@@ -42,6 +44,10 @@ void StaticMutex::UnlockRead() { ReleaseSRWLockShared(&lock_); }
 void StaticMutex::LockWrite() { AcquireSRWLockExclusive(&lock_); }
 void StaticMutex::UnlockWrite() { ReleaseSRWLockExclusive(&lock_); }
 Mutex::~Mutex() { /* SRWLOCKs require no cleanup. */ }
+
+#endif // OPENSSL_WINDOWS_ALLOW_WINXP
+
+#ifndef HAVE_LIBCXX
 
 static SRWLOCK g_destructors_lock = SRWLOCK_INIT;
 static thread_local_destructor_t g_destructors[NUM_OPENSSL_THREAD_LOCALS];
@@ -221,6 +227,8 @@ int CRYPTO_set_thread_local(thread_local_data_t index, void *value,
   pointers[index] = value;
   return 1;
 }
+
+#endif // HAVE_LIBCXX
 
 BSSL_NAMESPACE_END
 

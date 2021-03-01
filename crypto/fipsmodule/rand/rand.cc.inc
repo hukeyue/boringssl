@@ -111,7 +111,7 @@ static void rand_thread_state_clear_all() {
 
 // rand_thread_state_free frees a |rand_thread_state|. This is called when a
 // thread exits.
-static void rand_thread_state_free(void *state_in) {
+static void CRYPTO_TLS_DESTRUCTOR_CC rand_thread_state_free(void *state_in) {
   struct rand_thread_state *state =
       reinterpret_cast<rand_thread_state *>(state_in);
 
