@@ -112,7 +112,7 @@ static int global_next_library = ERR_NUM_LIBS;
 // updates.
 static StaticMutex global_next_library_mutex;
 
-static void err_state_free(void *statep) {
+static void CRYPTO_TLS_DESTRUCTOR_CC err_state_free(void *statep) {
   ERR_STATE *state = reinterpret_cast<ERR_STATE *>(statep);
 
   if (state == nullptr) {
