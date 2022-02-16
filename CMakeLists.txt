@@ -131,6 +131,13 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CLANG)
   endif()
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${C_CXX_FLAGS}")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${C_CXX_FLAGS}")
+
+  # Don't warn about "maybe" uninitialized. Clang doesn't include this
+  # in -Wall but gcc does, and it gives false positives.
+  if (NOT CLANG)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-maybe-uninitialized -Wno-deprecated-declarations")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-maybe-uninitialized -Wno-deprecated-declarations")
+  endif()
 elseif(MSVC)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -utf-8")
   # Without /Zc:__cplusplus, MSVC does not define the right value for
@@ -322,7 +329,6 @@ if(FIPS_DELOCATE OR NOT OPENSSL_NO_ASM)
     endif()
   endif()
 endif()
-
 
 if (MSVC)
   if (MSVC_CRT_LINKAGE STREQUAL "static")
