@@ -60,14 +60,29 @@ void bssl::CRYPTO_sysrand(uint8_t *out, size_t requested) {
 typedef BOOL(WINAPI *ProcessPrngFunction)(PBYTE pbData, SIZE_T cbData);
 static ProcessPrngFunction g_processprng_fn = nullptr;
 
-static void init_processprng() {
-  HMODULE hmod = LoadLibraryW(L"bcryptprimitives");
+// wine's trick
+static void init_processprng_fallback() {
+  HMODULE hmod = LoadLibraryW(L"advapi32");
   if (hmod == nullptr) {
     abort();
   }
-  g_processprng_fn = (ProcessPrngFunction)GetProcAddress(hmod, "ProcessPrng");
+  g_processprng_fn = (ProcessPrngFunction)GetProcAddress(hmod, "SystemFunction036");
   if (g_processprng_fn == nullptr) {
     abort();
+  }
+}
+
+static void init_processprng() {
+  HMODULE hmod = LoadLibraryW(L"bcryptprimitives");
+  if (hmod == nullptr) {
+    init_processprng_fallback();
+    return;
+  }
+  g_processprng_fn = (ProcessPrngFunction)GetProcAddress(hmod, "ProcessPrng");
+  if (g_processprng_fn == nullptr) {
+    // Possible on Windows 7 SP1, need fallback as well
+    init_processprng_fallback();
+    return;
   }
 }
 
