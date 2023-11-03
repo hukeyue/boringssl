@@ -4,7 +4,7 @@
 #include "../../crypto/internal.h"
 
 #if !defined(OPENSSL_NO_ASM) && (defined(__ELF__) || defined(__APPLE__)) && \
-    defined(OPENSSL_X86_64) && !defined(OPENSSL_NANOLIBC)
+    defined(OPENSSL_X86_64) && !defined(OPENSSL_NANOLIBC) && !defined(_WIN32)
 // These functions are only available with gas and SysV ABI, used by Apple and
 // ELF-based platforms. Unlike most of our SysV assembly, they currently rely on
 // the SysV redzone. This trips one target which looks like it targets SysV but
@@ -187,7 +187,7 @@ static FIAT_P256_FIAT_INLINE void fiat_p256_cmovznz_u64(uint64_t* out1, fiat_p25
 static FIAT_P256_FIAT_INLINE void fiat_p256_mul(fiat_p256_montgomery_domain_field_element out1, const fiat_p256_montgomery_domain_field_element arg1, const fiat_p256_montgomery_domain_field_element arg2) {
   // NOTE: edited by hand, see third_party/fiat/README.md
 #if !defined(OPENSSL_NO_ASM) && (defined(__ELF__) || defined(__APPLE__)) && \
-    defined(OPENSSL_X86_64) && !defined(OPENSSL_NANOLIBC)
+    defined(OPENSSL_X86_64) && !defined(OPENSSL_NANOLIBC) && !defined(_WIN32)
   if (bssl::CRYPTO_is_BMI1_capable() && bssl::CRYPTO_is_BMI2_capable() &&
       bssl::CRYPTO_is_ADX_capable()) {
     fiat_p256_adx_mul(out1, arg1, arg2);
@@ -503,7 +503,7 @@ static FIAT_P256_FIAT_INLINE void fiat_p256_mul(fiat_p256_montgomery_domain_fiel
 static FIAT_P256_FIAT_INLINE void fiat_p256_square(fiat_p256_montgomery_domain_field_element out1, const fiat_p256_montgomery_domain_field_element arg1) {
   // NOTE: edited by hand, see third_party/fiat/README.md
 #if !defined(OPENSSL_NO_ASM) && (defined(__ELF__) || defined(__APPLE__)) && \
-    defined(OPENSSL_X86_64) && !defined(OPENSSL_NANOLIBC)
+    defined(OPENSSL_X86_64) && !defined(OPENSSL_NANOLIBC) && !defined(_WIN32)
   if (bssl::CRYPTO_is_BMI1_capable() && bssl::CRYPTO_is_BMI2_capable() &&
       bssl::CRYPTO_is_ADX_capable()) {
     fiat_p256_adx_sqr(out1, arg1);
