@@ -43,6 +43,10 @@
 #include <sys/utsname.h>
 #endif
 
+#if defined(OPENSSL_FREEBSD)
+#include <sys/wait.h>
+#endif
+
 #include <gtest/gtest.h>
 
 #include <openssl/mem.h>
