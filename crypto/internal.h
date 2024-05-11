@@ -1484,7 +1484,7 @@ inline int CRYPTO_fuzzer_mode_enabled(void) { return 0; }
 
 // NOTE: Unoptimized GCC builds may compile these builtins to non-constant-time
 // code. For correct constant-time behavior, ensure builds are optimized.
-#if OPENSSL_HAS_BUILTIN(__builtin_addc)
+#if OPENSSL_HAS_BUILTIN(__builtin_addc) && !defined(__cplusplus)
 
 inline unsigned int CRYPTO_addc_impl(unsigned int x, unsigned int y,
                                      unsigned int carry,
@@ -1558,7 +1558,7 @@ static inline uint64_t CRYPTO_addc_u64(uint64_t x, uint64_t y, uint64_t carry,
 
 // CRYPTO_subc_* returns |x - y - borrow|, and sets |*out_borrow| to the borrow
 // bit. |borrow| must be zero or one.
-#if OPENSSL_HAS_BUILTIN(__builtin_subc)
+#if OPENSSL_HAS_BUILTIN(__builtin_subc) && !defined(__cplusplus)
 
 inline unsigned int CRYPTO_subc_impl(unsigned int x, unsigned int y,
                                      unsigned int borrow,
