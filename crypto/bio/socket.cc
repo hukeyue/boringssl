@@ -70,10 +70,12 @@ static int sock_write_ex(BIO *b, const char *in, size_t inl,
   bio_clear_socket_error();
 #if defined(OPENSSL_WINDOWS)
   inl = std::min(inl, size_t{INT_MAX});
-  int ret = send(FromOpaque(b)->num, in, static_cast<int>(inl), 0);
-#else
-  ssize_t ret = write(FromOpaque(b)->num, in, inl);
 #endif
+  int flags = 0;
+#if defined(MSG_NOSIGNAL)
+  flags |= MSG_NOSIGNAL;
+#endif
+  int ret = send(FromOpaque(b)->num, in, inl, flags);
   BIO_clear_retry_flags(b);
   if (ret <= 0) {
     if (bio_socket_should_retry(ret)) {
