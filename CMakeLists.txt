@@ -586,6 +586,19 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CLANG)
     list(APPEND C_CXX_WARNINGS -Wctad-maybe-unsupported)
   endif()
 
+  if (CMAKE_C_COMPILER_ID STREQUAL "AppleClang")
+    list(APPEND C_CXX_WARNINGS -Wno-error=shorten-64-to-32)
+  endif()
+
+  if (MINGW)
+    list(APPEND C_CXX_WARNINGS "-Wno-error=#warnings")
+  endif()
+
+  # stl_tempbuf.h:263:8: error: 'get_temporary_buffer<bssl::(anonymous namespace)::IssuerEntry>' is deprecated
+  if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    list(APPEND C_CXX_WARNINGS "-Wno-error=deprecated-declarations")
+  endif()
+
   add_compile_options(
     "$<$<COMPILE_LANGUAGE:C,CXX>:${C_CXX_WARNINGS}>"
     "$<$<COMPILE_LANGUAGE:C>:${C_WARNINGS}>"
