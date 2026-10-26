@@ -27,6 +27,7 @@ OPENSSL_MSVC_PRAGMA(warning(pop))
 #include <string.h>
 
 #include <thread>
+#include <mutex>
 
 #include <openssl/mem.h>
 
